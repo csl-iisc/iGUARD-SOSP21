@@ -103,6 +103,7 @@ int granularity = 4;
 int check_locking = 1;
 int check_its = 1;
 //int lock_granularity = 0;
+int contention_optim = 1;
 int race_exit = 0;
 int md_scale = 1;
 int timeout = 0;
@@ -129,6 +130,7 @@ void nvbit_at_init() {
     GET_VAR_INT(check_locking, "CHECK_LOCKS", 1, "Whether to do lockset detection (def = 1)");
     //GET_VAR_INT(lock_granularity, "LOCK_GRAN", 0, "Granularity of lock tracking (0 = warp, 1 = thread; def = 0)");
     GET_VAR_INT(check_its, "CHECK_ITS", 1, "Whether to consider ITS when checking (def = 1)");
+    GET_VAR_INT(contention_optim, "CONT_OPT", 1, "Whether to perform backoff and coalescing optimizations for contention (def = 1)");
     GET_VAR_INT(race_exit, "EXIT", 0, "Quit on encountering error (def = 0)");
     GET_VAR_INT(md_scale, "MD_SCALE", 1, "Factor by which to scale down metadata (def = 1)");
     GET_VAR_INT(timeout, "TIMEOUT", 0, "Time in seconds after which to quit detection (0 = never; def = 0)");
@@ -646,7 +648,8 @@ void nvbit_at_ctx_init(CUcontext ctx) {
     start = std::chrono::high_resolution_clock::now();
     skip_flag = true;
     cudaMemcpy(&parameters[BYTE_GRAN], &granularity, sizeof(uint32_t), cudaMemcpyHostToDevice);
-    uint32_t val = ((check_locking ? MASK_CHECK_LOCKS : 0) | /*(lock_granularity ? MASK_LOCK_GRAN : 0) |*/ (check_its ? MASK_CHECK_ITS : 0));
+    uint32_t val = ((check_locking ? MASK_CHECK_LOCKS : 0) | /*(lock_granularity ? MASK_LOCK_GRAN : 0) |*/ 
+    	(check_its ? MASK_CHECK_ITS : 0) | (contention_optim ? MASK_CONTENT_OPT : 0));
     cudaMemcpy(&parameters[OPTIONS], &val, sizeof(uint32_t), cudaMemcpyHostToDevice);
     
     size_t free = 0, total = 0;

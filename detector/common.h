@@ -164,6 +164,7 @@ typedef enum : uint32_t {
     MASK_CHECK_LOCKS = 1,
     MASK_LOCK_GRAN   = 2,
     MASK_CHECK_ITS   = 4,
+    MASK_CONTENT_OPT = 8,
 } par_mask_t;
 
 typedef enum : uint64_t {

@@ -7,7 +7,7 @@ detector: nvbit_release/tools/detector
 	cd nvbit_release/tools/detector; \
 	$(MAKE)
 
-nvbit_release/tools/detector: nvbit_release/tools/
+nvbit_release/tools/detector: nvbit_release/tools/ detector/
 	cp -r detector/ nvbit_release/tools/
 
 nvbit-Linux-x86_64-1.4.tar.bz2:

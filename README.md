@@ -1,4 +1,4 @@
-# iGUARD: <u>I</u>n-<u>G</u>P<u>U</u> <u>A</u>dvanced <u>R</u>ace <u>D</u>etection
+# iGUARD: <ins>I</ins>n-<ins>G</ins>P<ins>U</ins> <ins>A</ins>dvanced <ins>R</ins>ace <ins>D</ins>etection
 ## Requirements
 ### Detector
 iGUARD is built on top of NVBit (version 1.4) and shares its requirements, listed below:
@@ -24,3 +24,10 @@ To download, extract, and setup NVBit, run the following command:
 To delete the installed NVBit, run the following command:
 `make clean_detector`
 
+
+### Docker
+https://docs.docker.com/engine/install/ubuntu/
+https://nvidia.github.io/nvidia-container-runtime/
+sudo apt-get install nvidia-container-runtime
+docker pull nvidia/cuda:11.0.3-devel-ubuntu18.04
+sudo docker run --gpus all nvidia/cuda:11.0.3-devel-ubuntu18.04 nvidia-smi

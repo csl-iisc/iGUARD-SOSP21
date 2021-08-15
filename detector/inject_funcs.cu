@@ -687,6 +687,9 @@ extern "C" __device__ __noinline__ void instrument_mem(int pred, int opcode_id,
     // BlockId
     unsigned mask = __activemask();
     
+    // Perform contention optimizations?
+    bool cont_opt = hasMask(((uint32_t*)parameters)[OPTIONS], MASK_CONTENT_OPT);
+    
     uint64_t bid = serializeId(blockIdx.x, blockIdx.y, blockIdx.z, gridDim.x, gridDim.y, gridDim.z);
 
     if(scope == SCOPE_CTA) {
@@ -721,7 +724,7 @@ extern "C" __device__ __noinline__ void instrument_mem(int pred, int opcode_id,
 		    // Have only one thread do race detection
 		    unsigned mask2 = __activemask();
 		    uint64_t oth_addr = __shfl_sync(mask2, addr, __ffs(mask2) - 1);
-		    if(!(oth_addr == addr && hasMask(op_mask, MASK_LOAD)) || (tid == __ffs(mask2) - 1)) {
+		    if(oth_addr != addr || !hasMask(op_mask, MASK_LOAD) || !cont_opt || (tid == __ffs(mask2) - 1)) {
 		        uint32_t detected_race = NO_RACE;
 		        DWORD race_read_md;
 		        DWORD race_write_md;
@@ -730,7 +733,7 @@ extern "C" __device__ __noinline__ void instrument_mem(int pred, int opcode_id,
 		        const unsigned WARPS = (blockDim.x * min(gridDim.x, 100)) / WARP_SIZE;
 		        const unsigned BASE_DELAY = 100;
 		        const unsigned MAX_DELAY = max(BASE_DELAY, WARPS * BASE_DELAY / 40);
-		        unsigned delay = BASE_DELAY;
+		        unsigned delay = (cont_opt ? BASE_DELAY : 0);
 		        do {
 		            // -1 indicates unused, -2 indicates in-use
 		            const DWORD reserved_data = (DWORD)-2;

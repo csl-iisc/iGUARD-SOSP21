@@ -1,4 +1,4 @@
-BENCHMARKS1  ?= #matrix-mult 1dconv graph-con conjugGMB reduceMB warpAA shoc_bfs
+BENCHMARKS1  ?= matrix-mult 1dconv graph-con conjugGMB reduceMB warpAA shoc_bfs
 BENCHMARKS2	 ?= mis cc
 HOOKLIB      ?= ../../nvbit_release/tools/detector/detector.so
 PREFIX_NODET ?= NODET

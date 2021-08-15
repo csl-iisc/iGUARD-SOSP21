@@ -30,3 +30,7 @@
 # Executables
 *.out
 *.app
+
+# Downloaded NVBit
+nvbit_release/**
+nvbit-Linux-x86_64-1.4.tar.bz2

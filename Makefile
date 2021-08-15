@@ -1,4 +1,4 @@
-.PHONY: setup detector
+.PHONY: setup detector figure_10
 
 setup: nvbit_release/tools/detector	
 	$(MAKE) detector
@@ -19,3 +19,7 @@ nvbit_release/tools/: nvbit-Linux-x86_64-1.4.tar.bz2
 clean_detector:
 	rm -rf nvbit_release/
 	rm nvbit-Linux-x86_64-1.4.tar.bz2
+	
+figure_10:
+	cd benchmarks/Figure_10; \
+	$(MAKE)

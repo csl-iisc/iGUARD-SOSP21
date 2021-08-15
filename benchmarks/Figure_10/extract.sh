@@ -13,7 +13,6 @@ for runs in `seq 1 1 ${RUNS}`; do
 		benchmark=${file#"${PREFIX_NODET}${runs}_"}
 		benchmark=${benchmark%".raw"}
 		[ -z "${nodet_res[$benchmark]}" ] && nodet_res[$benchmark]=0
-		echo $benchmark 
 		nodet_res[$benchmark]=$(awk "BEGIN {print ${nodet_res[$benchmark]}+$(grep "^runtime" $file | grep -oE "[0-9]+\.[0-9]+")}")
 	done
 done
@@ -23,7 +22,6 @@ for runs in `seq 1 1 ${RUNS}`; do
 		benchmark=${file#"${PREFIX_DET1}${runs}_"}
 		benchmark=${benchmark%".raw"}
 		[ -z "${det1_res[$benchmark]}" ] && det1_res[$benchmark]=0
-		echo $benchmark 
 		det1_res[$benchmark]=$(awk "BEGIN {print ${det1_res[$benchmark]}+$(grep "^runtime" $file | grep -oE "[0-9]+\.[0-9]+")}")
 	done
 done
@@ -33,11 +31,11 @@ for runs in `seq 1 1 ${RUNS}`; do
 		benchmark=${file#"${PREFIX_DET2}${runs}_"}
 		benchmark=${benchmark%".raw"}
 		[ -z "${det2_res[$benchmark]}" ] && det2_res[$benchmark]=0
-		echo $benchmark 
 		det2_res[$benchmark]=$(awk "BEGIN {print ${det2_res[$benchmark]}+$(grep "^runtime" $file | grep -oE "[0-9]+\.[0-9]+")}")
 	done
 done
 
+: '''
 for i in ${!nodet_res[@]}; do
 	echo $i
 	nodet_res[$i]=$(awk "BEGIN {print ${nodet_res[$i]}/${RUNS}}")
@@ -54,4 +52,13 @@ for i in ${!det2_res[@]}; do
 	echo $i
 	det2_res[$i]=$(awk "BEGIN {print ${det2_res[$i]}/${RUNS}}")
 	echo ${det2_res[$i]}
+done
+'''
+
+printf "Final results\n"
+printf "Benchmark\tWith opt\tWithout\n"
+for i in ${!nodet_res[@]}; do
+	with_opt=$(awk "BEGIN {print ${det1_res[$i]}/${nodet_res[$i]}}")
+	without_opt=$(awk "BEGIN {print ${det2_res[$i]}/${nodet_res[$i]}}")
+	printf "%s\t%f\t%f\n" $i $with_opt $without_opt
 done

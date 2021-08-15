@@ -1,4 +1,4 @@
-BENCHMARKS   ?= matrix-mult graph-con #1dconv
+BENCHMARKS   ?= matrix-mult 1dconv graph-con
 HOOKLIB      ?= ../../nvbit_release/tools/detector/detector.so
 PREFIX_NODET ?= NODET
 PREFIX_DET1  ?= IGUARD_OPT
@@ -18,15 +18,19 @@ run:
 	for runs in `seq 1 1 ${RUNS}`; do \
 		for bm in $(BENCHMARKS); do \
 			echo $$bm ;\
-			echo "" > results/${PREFIX_DET}$${runs}_$${bm}.raw; \
-			time -f "MAXCPUMEM\t$$file\t%M\nruntime\t$$file\t%e\n" ./run.sh $$bm ${HOOKLIB} >> results/${PREFIX_DET}$${runs}_$$bm.raw 2>&1; \
+			echo "" > results/${PREFIX_DET1}$${runs}_$${bm}.raw; \
+			time -f "MAXCPUMEM\t$$file\t%M\nruntime\t$$file\t%e\n" ./run.sh $$bm ${HOOKLIB} >> results/${PREFIX_DET1}$${runs}_$$bm.raw 2>&1; \
 		done \
 	done
 	
 	for runs in `seq 1 1 ${RUNS}`; do \
 		for bm in $(BENCHMARKS); do \
 			echo $$bm ;\
-			echo "" > results/${PREFIX_DET}$${runs}_$${bm}.raw; \
-			CONT_OPT=0 time -f "MAXCPUMEM\t$$file\t%M\nruntime\t$$file\t%e\n" ./run.sh $$bm ${HOOKLIB} >> results/${PREFIX_DET}$${runs}_$$bm.raw 2>&1; \
+			echo "" > results/${PREFIX_DET2}$${runs}_$${bm}.raw; \
+			CONT_OPT=0 time -f "MAXCPUMEM\t$$file\t%M\nruntime\t$$file\t%e\n" ./run.sh $$bm ${HOOKLIB} >> results/${PREFIX_DET2}$${runs}_$$bm.raw 2>&1; \
 		done \
 	done
+	$(MAKE) extract
+	
+extract:
+	./extract.sh ${PREFIX_NODET} ${PREFIX_DET1} ${PREFIX_DET2} ${RUNS}

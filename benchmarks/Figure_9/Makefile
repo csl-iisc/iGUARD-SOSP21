@@ -15,6 +15,9 @@ run:
 	$(MAKE) RUNS=${RUNS};
 	
 	$(MAKE) extract
+	mkdir -p results/
+	$(MAKE) extract > results/final.txt
+	echo "Stored results at results/final.txt"
 	
 extract:
 	./extract.sh ${PREFIX_NODET1} ${PREFIX_NODET2} ${PREFIX_DET1} ${PREFIX_DET2} "${BENCHMARKS}" ${RUNS}

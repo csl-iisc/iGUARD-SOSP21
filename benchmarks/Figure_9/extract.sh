@@ -18,7 +18,7 @@ for runs in `seq 1 1 ${RUNS}`; do
 		nodet1_res[$benchmark]=$(awk "BEGIN {print ${nodet1_res[$benchmark]}+$(grep "^runtime" $file | grep -oE "[0-9]+\.[0-9]+")}")
 	done
 done
-: '
+
 for runs in `seq 1 1 ${RUNS}`; do
 	for file in ${PREFIX_NODET2}${runs}*; do
 		benchmark=${file#"${PREFIX_NODET2}${runs}_"}
@@ -27,7 +27,7 @@ for runs in `seq 1 1 ${RUNS}`; do
 		nodet2_res[$benchmark]=$(awk "BEGIN {print ${nodet2_res[$benchmark]}+$(grep "^runtime" $file | grep -oE "[0-9]+\.[0-9]+")}")
 	done
 done
-'
+
 
 for runs in `seq 1 1 ${RUNS}`; do
 	for file in ${PREFIX_DET1}${runs}*; do
@@ -38,7 +38,7 @@ for runs in `seq 1 1 ${RUNS}`; do
 	done
 done
 
-: '
+
 for runs in `seq 1 1 ${RUNS}`; do
 	for file in ${PREFIX_DET2}${runs}*; do
 		benchmark=${file#"${PREFIX_DET2}${runs}_"}
@@ -47,7 +47,7 @@ for runs in `seq 1 1 ${RUNS}`; do
 		det2_res[$benchmark]=$(awk "BEGIN {print ${det2_res[$benchmark]}+$(grep "^runtime" $file | grep -oE "[0-9]+\.[0-9]+")}")
 	done
 done
-'
+
 
 : '''
 for i in ${!nodet_res[@]}; do
@@ -72,9 +72,9 @@ done
 printf "Normalised performance results\n"
 printf "Benchmark\tiGUARD\tBarracuda\n"
 for i in ${BENCHMARKS}; do
-	echo $i ${det1_res[$i]} ${nodet1_res[$i]}
+	#echo $i ${det1_res[$i]} ${nodet1_res[$i]}
 	iguard=$(awk "BEGIN {print ${det1_res[$i]}/${nodet1_res[$i]}}")
-	#barracuda=$(awk "BEGIN {print ${det2_res[$i]}/${nodet2_res[$i]}}")
+	[ -z "${det2_res[$benchmark]}" ] && barracuda="-" || barracuda=$(awk "BEGIN {print ${det2_res[$i]}/${nodet2_res[$i]}}")
 	#printf "%s\t%f\t%f\n" $i $without_opt $with_opt
-	printf "%s\t%f\n" $i $iguard
+	[ -z "${det2_res[$benchmark]}" ] && printf "%s\t%f\t-\n" $i $iguard || printf "%s\t%f\t%f\n" $i $iguard $barracuda
 done

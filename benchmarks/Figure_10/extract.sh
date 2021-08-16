@@ -56,9 +56,9 @@ done
 '''
 
 printf "Final results\n"
-printf "Benchmark\tWith opt\tWithout\n"
+printf "Benchmark\tBaseline\tWith optimization\n"
 for i in ${!nodet_res[@]}; do
 	with_opt=$(awk "BEGIN {print ${det1_res[$i]}/${nodet_res[$i]}}")
 	without_opt=$(awk "BEGIN {print ${det2_res[$i]}/${nodet_res[$i]}}")
-	printf "%s\t%f\t%f\n" $i $with_opt $without_opt
+	printf "%s\t%f\t%f\n" $i $without_opt $with_opt
 done

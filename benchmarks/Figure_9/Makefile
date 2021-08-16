@@ -2,7 +2,7 @@ PREFIX_NODET1 ?= iGUARD/results/NODET
 PREFIX_NODET2 ?= Barracuda/results/NODET
 PREFIX_DET1   ?= iGUARD/results/IGUARD
 PREFIX_DET2   ?= Barracuda/results/BARR
-RUNS          ?= 1
+RUNS          ?= 5
 BENCHMARKS    ?= matrix-mult 1dconv graph-con reduction rule-110 uts graph-color \
 				 conjugGMB reduceMB warpAA louvain bc pr_nibble sm color \
 				 mis cc interac hashtable shoc_bfs \
@@ -11,13 +11,21 @@ BENCHMARKS    ?= matrix-mult 1dconv graph-con reduction rule-110 uts graph-color
 				 dwt2d hotspot hybridsort kmeans needle nn pathfinder srad
 
 run:
+	$(MAKE) run_iGUARD
+	$(MAKE) run_barracuda
+	
+	$(MAKE) extract
+	$(MAKE) extract > results.txt
+	echo "Stored results in benchmarks/Figure_9/results.txt"
+	
+run_iGUARD:
 	cd iGUARD; \
 	$(MAKE) RUNS=${RUNS};
 	
-	$(MAKE) extract
-	mkdir -p results/
-	$(MAKE) extract > results/final.txt
-	echo "Stored results at results/final.txt"
+run_barracuda:
+	cd Barracuda; \
+	$(MAKE) RUNS=${RUNS};
+	
 	
 extract:
 	./extract.sh ${PREFIX_NODET1} ${PREFIX_NODET2} ${PREFIX_DET1} ${PREFIX_DET2} "${BENCHMARKS}" ${RUNS}

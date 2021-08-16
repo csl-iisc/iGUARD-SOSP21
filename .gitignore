@@ -34,3 +34,7 @@
 # Downloaded NVBit
 nvbit_release/**
 *.tar.bz2
+
+# Gunrock generated files
+*.meta
+*edge_pairs

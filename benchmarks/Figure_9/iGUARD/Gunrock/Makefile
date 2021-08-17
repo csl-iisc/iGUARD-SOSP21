@@ -29,7 +29,7 @@ run_bc:
 	LD_PRELOAD=${HOOKLIB} ./bin/bc market ./input/bc --undirected --src=0
 
 run_pr_nibble:
-	LD_PRELOAD=${HOOKLIB} ./bin/pr_nibble  market ./input/pr_nibble
+	LD_PRELOAD=${HOOKLIB} ./bin/pr_nibble market ./input/pr_nibble
 
 run_sm:
 	LD_PRELOAD=${HOOKLIB} BYTE_GRAN=1 ./bin/sm market ./input/sm1 --pattern-graph-type=market \

@@ -4,8 +4,6 @@ RUNS         ?= 1
 PREFIX_NODET ?= NODET
 PREFIX_DET   ?= IGUARD
 
-.SILENT: run
-
 run:
 	mkdir -p ../results/
 	for runs in `seq 1 1 ${RUNS}`; do \

@@ -1,5 +1,5 @@
-DIRS         ?= ScoR CG Gunrock LS Kilo-TM SHoC CUB Rodinia
-RACEY_DIRS 	 ?= CG NVlib_CG Gunrock LS Kilo-TM SHoC
+DIRS         ?= ScoR CG NVlib_CG Gunrock LS Kilo-TM SHoC CUB Rodinia
+RACEY_DIRS 	 ?= ScoR CG NVlib_CG Gunrock LS Kilo-TM SHoC
 RUNS         ?= 1
 PREFIX_NODET ?= NODET
 PREFIX_DET   ?= IGUARD

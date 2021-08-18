@@ -2,7 +2,7 @@ BENCHMARKS   ?= dwt2d hotspot hybridsort hybridsort kmeans needle nn pathfinder 
 HOOKLIB      ?= ../libhook.so
 RUNS         ?= 1
 PREFIX_NODET ?= NODET
-PREFIX_DET   ?= IGUARD
+PREFIX_DET   ?= BARR
 
 
 run:

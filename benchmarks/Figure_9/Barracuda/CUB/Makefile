@@ -2,7 +2,7 @@ BENCHMARKS   ?= b_radix_sort b_reduce b_scan d_part_flag d_part_if d_radix_sort 
 HOOKLIB      ?= ../libhook.so
 RUNS         ?= 1
 PREFIX_NODET ?= NODET
-PREFIX_DET   ?= IGUARD
+PREFIX_DET   ?= BARR
 
 .SILENT: run
 

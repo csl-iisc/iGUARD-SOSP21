@@ -2,7 +2,7 @@ BENCHMARKS   ?= shoc_bfs
 HOOKLIB      ?= ../libhook.so
 RUNS         ?= 1
 PREFIX_NODET ?= NODET
-PREFIX_DET   ?= IGUARD
+PREFIX_DET   ?= BARR
 
 .SILENT: run
 

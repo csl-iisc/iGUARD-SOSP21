@@ -5,8 +5,9 @@ PREFIX_NODET ?= NODET
 PREFIX_DET1  ?= IGUARD_OPT
 PREFIX_DET2  ?= IGUARD
 RUNS         ?= 3
+OUTPUT_BENCH ?= matrix-mult 1dconv graph-con conjugGMB reduceMB warpAA mis cc shoc_bfs
 
-.SILENT: run
+.SILENT: run extract extract_final
 
 run:
 	mkdir -p results/
@@ -58,7 +59,11 @@ run:
 			CONT_OPT=0 time -f "MAXCPUMEM\t$$file\t%M\nruntime\t$$file\t%e\n" ./run2.sh $$bm ${HOOKLIB} >> results/${PREFIX_DET2}$${runs}_$$bm.raw 2>&1; \
 		done \
 	done
-	$(MAKE) extract
 	
 extract:
-	./extract.sh ${PREFIX_NODET} ${PREFIX_DET1} ${PREFIX_DET2} ${RUNS}
+	$(MAKE) extract_final
+	$(MAKE) -s extract_final > results.txt
+	echo "\nResults stored in benchmarks/Figure_10/results.txt"
+
+extract_final:
+	./extract.sh ${PREFIX_NODET} ${PREFIX_DET1} ${PREFIX_DET2} ${RUNS} "${OUTPUT_BENCH}"

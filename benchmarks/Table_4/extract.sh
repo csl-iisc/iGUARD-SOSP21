@@ -26,7 +26,7 @@ done
 for benchmark in ${BENCHMARKS}; do
 	file="Barracuda/results.out"
 	if [ -f $file ]; then
-		ant=$(grep "Race" $file)
+		ant=$(grep "$benchmark" $file | grep -oE "[0-9]+")
 		if [ -z "$ant" ]; then
 			BARR_races[$benchmark]="-"
 		else

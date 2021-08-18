@@ -12,7 +12,6 @@ run:
 	done
 	
 extract:
-	mkdir -p ./races/
 	for folder in ${RACEY_DIRS}; do \
 		if [ -d "$$folder" ]; then   \
 			cd $$folder;             \

@@ -1,10 +1,9 @@
-BENCHMARKS   ?= hashtable
+BENCHMARKS   ?= hashtable interac
 HOOKLIB      ?= ../libhook.so
 RUNS         ?= 1
 PREFIX_NODET ?= NODET
 PREFIX_DET   ?= BARR
 
-.SILENT: run
 
 run:
 	mkdir -p ../results/

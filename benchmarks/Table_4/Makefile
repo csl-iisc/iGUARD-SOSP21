@@ -26,6 +26,17 @@ run_barracuda:
 	cd Barracuda; \
 	$(MAKE) RUNS=${RUNS};
 	
-	
 extract:
+	$(MAKE) extract_iGUARD
+	$(MAKE) extract_BARR
 	./extract.sh ${PREFIX_DET1} ${PREFIX_DET2} "${BENCHMARKS}" "${NO_RACE_BENCH}"
+	
+extract_iGUARD:
+	cd iGUARD; \
+	$(MAKE) extract > results.out; \
+	cd ..
+	
+extract_BARR:
+	cd Barracuda; \
+	$(MAKE) extract > results.out; \
+	cd ..

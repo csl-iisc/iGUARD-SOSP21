@@ -7,37 +7,37 @@ NO_RACE_BENCH=$4
 declare -A iGUARD_races
 declare -A BARR_races
 
-
+# Racey iGUARD
 for benchmark in ${BENCHMARKS}; do
-	file="${PREFIX_DET1}1_${benchmark}.raw"
+	file="iGUARD/results.out"
 	if [ -f $file ]; then
-		ant=$(grep "Race" $file)
-		echo $ant
+		ant=$(grep "$benchmark" $file | grep -oE "[0-9]+")
 		if [ -z "$ant" ]; then
-			iGUARD_races[$benchmark]="0"
+			iGUARD_races[$benchmark]="-"
 		else
-			echo ${#ant[@]}
-			iGUARD_races[$benchmark]="${#ant[@]}"
+			iGUARD_races[$benchmark]="$ant"
 		fi
 	else
 		iGUARD_races[$benchmark]="-"
 	fi
 done
 
+# Racey Barracuda
 for benchmark in ${BENCHMARKS}; do
-	file="${PREFIX_DET2}1_${benchmark}.raw"
+	file="Barracuda/results.out"
 	if [ -f $file ]; then
 		ant=$(grep "Race" $file)
 		if [ -z "$ant" ]; then
-			BARR_races[$benchmark]="0"
+			BARR_races[$benchmark]="-"
 		else
-			BARR_races[$benchmark]=${#ant[@]}
+			BARR_races[$benchmark]="$ant"
 		fi
 	else
 		BARR_races[$benchmark]="-"
 	fi
 done
 
+# Race-free iGUARD
 for benchmark in ${NO_RACE_BENCH}; do
 	file="${PREFIX_DET1}1_${benchmark}.raw"
 	if [ -f $file ]; then
@@ -52,6 +52,7 @@ for benchmark in ${NO_RACE_BENCH}; do
 	fi
 done
 
+# Race-free Barracuda
 for benchmark in ${NO_RACE_BENCH}; do
 	file="${PREFIX_DET2}1_${benchmark}.raw"
 	if [ -f $file ]; then

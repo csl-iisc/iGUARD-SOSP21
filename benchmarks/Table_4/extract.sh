@@ -7,6 +7,7 @@ NO_RACE_BENCH=$4
 declare -A iGUARD_races
 declare -A BARR_races
 
+
 for benchmark in ${BENCHMARKS}; do
 	file="${PREFIX_DET1}1_${benchmark}.raw"
 	if [ -f $file ]; then

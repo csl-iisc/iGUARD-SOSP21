@@ -1,4 +1,5 @@
 DIRS         ?= ScoR CG Gunrock LS Kilo-TM SHoC CUB Rodinia
+RACEY_DIRS 	 ?= CG Gunrock LS Kilo-TM SHoC
 RUNS         ?= 1
 PREFIX_NODET ?= NODET
 PREFIX_DET   ?= IGUARD
@@ -8,4 +9,14 @@ run:
 		cd $$i;      \
 		$(MAKE) run RUNS=${RUNS} PREFIX_NODET=${PREFIX_NODET} PREFIX_DET=${PREFIX_DET}; \
 		cd ..;       \
+	done
+	
+extract:
+	mkdir -p ./races/
+	for folder in ${RACEY_DIRS}; do \
+		if [ -d "$$folder" ]; then   \
+			cd $$folder;             \
+			./extract.sh "../results/${PREFIX_DET}1_";\
+			cd ..;\
+		fi;\
 	done

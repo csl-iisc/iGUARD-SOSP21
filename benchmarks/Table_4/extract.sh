@@ -11,7 +11,7 @@ declare -A BARR_races
 for benchmark in ${BENCHMARKS}; do
 	file="iGUARD/results.out"
 	if [ -f $file ]; then
-		ant=$(grep "$benchmark" $file | grep -oE "[0-9]+")
+		ant=$(grep "^$benchmark" $file | grep -oE " [0-9]+" | grep -oE "[0-9]+")
 		if [ -z "$ant" ]; then
 			iGUARD_races[$benchmark]="-"
 		else

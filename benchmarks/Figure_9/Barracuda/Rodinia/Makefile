@@ -1,4 +1,4 @@
-BENCHMARKS   ?= dwt2d hotspot hybridsort kmeans needle nn pathfinder srad
+BENCHMARKS   ?= dwt2d hotspot hybridsort hybridsort kmeans needle nn pathfinder srad
 HOOKLIB      ?= ../libhook.so
 RUNS         ?= 1
 PREFIX_NODET ?= NODET

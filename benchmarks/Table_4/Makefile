@@ -2,7 +2,7 @@ PREFIX_NODET1 ?= iGUARD/results/NODET
 PREFIX_NODET2 ?= Barracuda/results/NODET
 PREFIX_DET1   ?= iGUARD/results/IGUARD
 PREFIX_DET2   ?= Barracuda/results/BARR
-RUNS          ?= 1
+RUNS          ?= 5
 BENCHMARKS    ?= matrix-mult 1dconv graph-con reduction rule-110 uts graph-color \
 				 conjugGMB reduceMB warpAA grid_sync louvain bc pr_nibble sm color \
 				 mis cc interac hashtable shoc_bfs
@@ -33,12 +33,12 @@ extract:
 
 extract_iGUARD:
 	cd iGUARD; \
-	$(MAKE) extract > results.out; \
+	$(MAKE) extract RUNS=${RUNS} > results.out; \
 	cd ..
 	
 extract_BARR:
 	cd Barracuda; \
-	$(MAKE) extract > results.out; \
+	$(MAKE) extract RUNS=${RUNS} > results.out; \
 	cd ..
 
 extract_final:

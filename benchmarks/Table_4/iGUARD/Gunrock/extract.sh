@@ -1,29 +1,32 @@
 #!/bin/bash
 PREFIX=$1
+RUN=$2
 
 # louvain
 benchmark="louvain"
 for i in $(seq 1 1 3); do
 	caught[$i]=0;
 done
-races=$(grep -A1 "Race" "${PREFIX}${benchmark}.raw")
-races=$(echo $races | grep -oE "Line [0-9]+")
-races=$(echo $races | grep -oE "[0-9]+")
+for run in `seq 1 1 $RUN`; do
+	races=$(grep -A1 "Race" "${PREFIX}${run}_${benchmark}.raw")
+	races=$(echo $races | grep -oE "Line [0-9]+")
+	races=$(echo $races | grep -oE "[0-9]+")
 
-for i in $races; do
-	if [ $i == "206" ]; then
-		caught[0]=1;
-	elif [ $i == "251" ]; then
-		caught[0]=1;
-	elif [ $i == "92" ]; then
-		caught[1]=1;
-	elif [ $i == "82" ]; then
-		caught[1]=1;
-	elif [ $i == "463" ]; then
-		caught[1]=1;
-	elif [ $i == "48" ]; then
-		caught[2]=1;
-	fi
+	for i in $races; do
+		if [ $i == "206" ]; then
+			caught[0]=1;
+		elif [ $i == "251" ]; then
+			caught[0]=1;
+		elif [ $i == "92" ]; then
+			caught[1]=1;
+		elif [ $i == "82" ]; then
+			caught[1]=1;
+		elif [ $i == "463" ]; then
+			caught[1]=1;
+		elif [ $i == "48" ]; then
+			caught[2]=1;
+		fi
+	done
 done
 
 total=0
@@ -38,16 +41,18 @@ benchmark="bc"
 for i in ${!caught[@]}; do
 	caught[$i]=0;
 done
-races=$(grep -A1 "Race" "${PREFIX}${benchmark}.raw")
-races=$(echo $races | grep -oE "Line [0-9]+")
-races=$(echo $races | grep -oE "[0-9]+")
+for run in `seq 1 1 $RUN`; do
+	races=$(grep -A1 "Race" "${PREFIX}${run}_${benchmark}.raw")
+	races=$(echo $races | grep -oE "Line [0-9]+")
+	races=$(echo $races | grep -oE "[0-9]+")
 
-for i in $races; do
-	if [ $i == "177" ]; then
-		caught[0]=1;
-	elif [ $i == "278" ]; then
-		caught[0]=1;
-	fi
+	for i in $races; do
+		if [ $i == "177" ]; then
+			caught[0]=1;
+		elif [ $i == "278" ]; then
+			caught[0]=1;
+		fi
+	done
 done
 
 total=0
@@ -62,16 +67,18 @@ benchmark="pr_nibble"
 for i in ${!caught[@]}; do
 	caught[$i]=0;
 done
-races=$(grep -A1 "Race" "${PREFIX}${benchmark}.raw")
-races=$(echo $races | grep -oE "Line [0-9]+")
-races=$(echo $races | grep -oE "[0-9]+")
+for run in `seq 1 1 $RUN`; do
+	races=$(grep -A1 "Race" "${PREFIX}${run}_${benchmark}.raw")
+	races=$(echo $races | grep -oE "Line [0-9]+")
+	races=$(echo $races | grep -oE "[0-9]+")
 
-for i in $races; do
-	if [ $i == "206" ]; then
-		caught[0]=1;
-	elif [ $i == "251" ]; then
-		caught[0]=1;
-	fi
+	for i in $races; do
+		if [ $i == "206" ]; then
+			caught[0]=1;
+		elif [ $i == "251" ]; then
+			caught[0]=1;
+		fi
+	done
 done
 
 total=0
@@ -86,16 +93,18 @@ benchmark="sm"
 for i in ${!caught[@]}; do
 	caught[$i]=0;
 done
-races=$(grep -A1 "Race" "${PREFIX}${benchmark}.raw")
-races=$(echo $races | grep -oE "Line [0-9]+")
-races=$(echo $races | grep -oE "[0-9]+")
+for run in `seq 1 1 $RUN`; do
+	races=$(grep -A1 "Race" "${PREFIX}${run}_${benchmark}.raw")
+	races=$(echo $races | grep -oE "Line [0-9]+")
+	races=$(echo $races | grep -oE "[0-9]+")
 
-for i in $races; do
-	if [ $i == "111" ]; then
-		caught[0]=1;
-	elif [ $i == "82" ]; then
-		caught[0]=1;
-	fi
+	for i in $races; do
+		if [ $i == "111" ]; then
+			caught[0]=1;
+		elif [ $i == "82" ]; then
+			caught[0]=1;
+		fi
+	done
 done
 
 total=0
@@ -110,23 +119,25 @@ benchmark="color"
 for i in ${!caught[@]}; do
 	caught[$i]=0;
 done
-races=$(grep -A1 "Race" "${PREFIX}${benchmark}.raw")
-races=$(echo $races | grep -oE "Line [0-9]+")
-races=$(echo $races | grep -oE "[0-9]+")
+for run in `seq 1 1 $RUN`; do
+	races=$(grep -A1 "Race" "${PREFIX}${run}_${benchmark}.raw")
+	races=$(echo $races | grep -oE "Line [0-9]+")
+	races=$(echo $races | grep -oE "[0-9]+")
 
-for i in $races; do
-	if [ $i == "129" ]; then
-		caught[0]=1;
-	elif [ $i == "132" ]; then
-		caught[1]=1;
-	elif [ $i == "112" ]; then
-		caught[0]=1;
-		caught[1]=1;
-	elif [ $i == "107" ]; then
-		caught[0]=1;
-	elif [ $i == "117" ]; then
-		caught[1]=1;
-	fi
+	for i in $races; do
+		if [ $i == "129" ]; then
+			caught[0]=1;
+		elif [ $i == "132" ]; then
+			caught[1]=1;
+		elif [ $i == "112" ]; then
+			caught[0]=1;
+			caught[1]=1;
+		elif [ $i == "107" ]; then
+			caught[0]=1;
+		elif [ $i == "117" ]; then
+			caught[1]=1;
+		fi
+	done
 done
 
 total=0

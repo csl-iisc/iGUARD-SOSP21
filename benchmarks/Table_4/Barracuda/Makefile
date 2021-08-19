@@ -15,7 +15,7 @@ extract:
 	for folder in ${RACEY_DIRS}; do \
 		if [ -d "$$folder" ]; then   \
 			cd $$folder;             \
-			./extract.sh "../results/${PREFIX_DET}1_";\
+			./extract.sh "../results/${PREFIX_DET}" ${RUNS};\
 			cd ..;\
 		fi;\
 	done

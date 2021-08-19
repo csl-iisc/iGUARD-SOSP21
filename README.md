@@ -29,5 +29,9 @@ To delete the installed NVBit, run the following command:
 https://docs.docker.com/engine/install/ubuntu/
 https://nvidia.github.io/nvidia-container-runtime/
 sudo apt-get install nvidia-container-runtime
-docker pull nvidia/cuda:11.0.3-devel-ubuntu18.04
-sudo docker run --gpus all nvidia/cuda:11.0.3-devel-ubuntu18.04 nvidia-smi
+sudo systemctl restart docker
+sudo docker pull nvidia/cuda:11.0.3-devel-ubuntu18.04
+sudo docker build -t test .
+sudo docker run --gpus all test make figure_9
+sudo docker run --gpus all test make figure_10
+sudo docker run --gpus all test make table_4

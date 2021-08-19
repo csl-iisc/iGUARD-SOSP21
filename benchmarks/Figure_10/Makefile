@@ -60,6 +60,8 @@ run:
 		done \
 	done
 	
+	$(MAKE) extract
+	
 extract:
 	$(MAKE) extract_final
 	$(MAKE) -s extract_final > results.txt

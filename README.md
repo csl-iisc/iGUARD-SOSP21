@@ -151,5 +151,5 @@ The following table lists the workloads used in the evaluation of the submission
 
 
 ## References
-**[1]** NVBit [[Paper]](https://github.com/NVlabs/NVBit/releases/download/v1.0/MICRO_19_NVBit.pdf) [[Repository]](https://github.com/NVlabs/NVBit)
+**[1]** NVBit [[Paper]](https://github.com/NVlabs/NVBit/releases/download/v1.0/MICRO_19_NVBit.pdf) [[Repository]](https://github.com/NVlabs/NVBit)    
 **[2]** Barracuda [[Paper]](https://www.cs.uic.edu/~mansky/barracuda.pdf) [[Repository]](https://github.com/upenn-acg/barracuda)

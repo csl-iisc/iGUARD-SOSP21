@@ -134,22 +134,22 @@ The major files are as follows:
  - **[detector.cu](detector/detector.cu)**: This contains the CPU-side code for the detector.  This includes allocating memory for metadata, the binary instrumentation process, and outputting caught races to the user.   
 - **[inject_funcs.cu](detector/inject_funcs.cu)**: This contains the CUDA code run on the GPU after instrumentation. This includes incrementing relevant counters on synchronization operations, adding/removing locks from the lock table, and performing the in-GPU race detection.
 
-## Benchmark suites
-This repository contains pre-compiled binaries from the open-source benchmark suites listed below:
+## Workloads (GPU benchmark suites, libraries and applications)
+The following table lists the workloads used in the evaluation of the submission version of the paper. This repository contains pre-compiled binaries from the open-source benchmark suites listed below. If one wishes, she/he can compile the workloads from source too. 
 
 
-| Suite      | Information | Code |
-| ---------- | -------- | -------- |
-| ScoR       | [[Paper]](https://www.csa.iisc.ac.in/~arkapravab/papers/isca20_ScoRD.pdf)     | [[Github]](https://github.com/csl-iisc/ScoR)     |
-| CG         | [[Blog]](https://developer.nvidia.com/blog/cooperative-groups/)     | [[Github]](https://github.com/NVIDIA/cuda-samples)     |
-| Gunrock     | [[Paper]](https://escholarship.org/uc/item/9gj6r1dj)     | [[Github]](https://github.com/gunrock/gunrock)     |
-| LonestarGPU | [[Paper]](http://cs.txstate.edu/~mb92/papers/iiswc12.pdf)     | [[Github]](https://github.com/IntelligentSoftwareSystems/Galois/tree/master/lonestar/analytics/gpu)     |
-| Kilo-TM  | [[Paper]](https://ieeexplore.ieee.org/document/6174995)     | [[Github]](https://github.com/upenn-acg/barracuda/tree/master/benchmarks/gpu-tm)     |
-| SHoC     | [[Paper]](https://dl.acm.org/doi/10.1145/1735688.1735702)     | [[Github]](https://github.com/vetter/shoc)     |
-| CUB      | [[Website]](https://nvlabs.github.io/cub/)     | [[Github]](https://github.com/NVIDIA/cub)     |
-| Rodinia  | [[Paper]](https://www.cs.virginia.edu/~skadron/Papers/rodinia_iiswc09.pdf)     | [[Website]](http://lava.cs.virginia.edu/Rodinia/download.htm)     |
+| Suite      | Information | Code | Description |
+| ---------- | -------- | -------- | - |
+| ScoR       | [[Paper]](https://www.csa.iisc.ac.in/~arkapravab/papers/isca20_ScoRD.pdf)     | [[Github]](https://github.com/csl-iisc/ScoR) | Racey applications using scopes. |
+| CG         | [[Blog]](https://developer.nvidia.com/blog/cooperative-groups/)     | [[Github]](https://github.com/NVIDIA/cuda-samples) | Sample applications using NVIDIA Cooperative Groups. |
+| Gunrock     | [[Paper]](https://escholarship.org/uc/item/9gj6r1dj)     | [[Github]](https://github.com/gunrock/gunrock)     | Graph processing system for GPUs. |
+| LonestarGPU | [[Paper]](http://cs.txstate.edu/~mb92/papers/iiswc12.pdf)     | [[Github]](https://github.com/IntelligentSoftwareSystems/Galois/tree/master/lonestar/analytics/gpu)     | GPU applications with irregular behaviour.
+| Kilo-TM  | [[Paper]](https://ieeexplore.ieee.org/document/6174995)     | [[Github]](https://github.com/upenn-acg/barracuda/tree/master/benchmarks/gpu-tm)     | GPU applications with fine-grained communication between threads. | 
+| SHoC     | [[Paper]](https://dl.acm.org/doi/10.1145/1735688.1735702)     | [[Github]](https://github.com/vetter/shoc) | Applications with heterogeneous compute.
+| CUB      | [[Website]](https://nvlabs.github.io/cub/)     | [[Github]](https://github.com/NVIDIA/cub)     | Parallel compute primitives for GPUs. |
+| Rodinia  | [[Paper]](https://www.cs.virginia.edu/~skadron/Papers/rodinia_iiswc09.pdf)     | [[Website]](http://lava.cs.virginia.edu/Rodinia/download.htm)     | Benchmarks for heterogeneous compute.
 
 
 ## References
-**[1]** NVBit [[Paper]](https://github.com/NVlabs/NVBit/releases/download/v1.0/MICRO_19_NVBit.pdf) [[Repository]](https://github.com/NVlabs/NVBit)    
+**[1]** NVBit [[Paper]](https://github.com/NVlabs/NVBit/releases/download/v1.0/MICRO_19_NVBit.pdf) [[Repository]](https://github.com/NVlabs/NVBit)
 **[2]** Barracuda [[Paper]](https://www.cs.uic.edu/~mansky/barracuda.pdf) [[Repository]](https://github.com/upenn-acg/barracuda)

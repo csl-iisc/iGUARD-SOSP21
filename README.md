@@ -25,8 +25,8 @@ sudo apt-get install -y wget bc gcc time gawk libtbb-dev
 The following are the steps required to reproduce the results, along with the expected run time. All commands should be run in the main repository folder.
  1. **Downloading NVBit and compiling detector. [5 - 10 minutes]**
  2. **Replicating Table 4. [~3 hours]**
- 3. **Replicating Figure 9. [~3 hours]**
- 4. **Replicating Figure 10. [~30 minutes]**
+ 3. **Replicating Figure 11. [~3 hours]**
+ 4. **Replicating Figure 12. [~30 minutes]**
 
 ### Downloading NVBit and compiling detector  [5 - 10 minutes]
 The following command downloads, extracts, sets up NVBit, and compiles our iGUARD tool:
@@ -59,27 +59,27 @@ Final parsed results will be outputted in the terminal and are also contained at
 
 Races are non-deterministic by their very nature. Not all races will manifest in every execution. The happens-before race detection philosophy that iGUARD partially relies upon can catch races only if they manifest. The scripts are set up to run each program five times by default to step aside possible non-determinism in the total number of races reported. If any slight variance is observed between the number of races reported by the tool and that in the paper, rerunning it should resolve the difference. 
 
-**Figure 9 [~3 hours]**    
+**Figure 11 [~3 hours]**    
 Run the following command in the main repository folder:
 ```
-make figure_9
+make figure_11
 ```
 This will run the appropriate benchmarks on iGUARD and Barracuda and measure the run time.  
 
-Raw outputs and run times for iGUARD and Barracuda will be contained in *benchmarks/Figure_9/iGUARD/results/* and *benchmarks/Figure_9/Barracuda/results/* respectively. Output files starting with NODET_ contain the outputs when no detection is run, while IGUARD_ and BARR_ are when iGUARD and Barracuda are used, respectively.
+Raw outputs and run times for iGUARD and Barracuda will be contained in *benchmarks/Figure_11/iGUARD/results/* and *benchmarks/Figure_11/Barracuda/results/* respectively. Output files starting with NODET_ contain the outputs when no detection is run, while IGUARD_ and BARR_ are when iGUARD and Barracuda are used, respectively.
 
-Final normalized results will be outputted in the terminal and are also contained at *benchmarks/Figure_9/results.txt* in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
+Final normalized results will be outputted in the terminal and are also contained at *benchmarks/Figure_11/results.txt* in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
 
-**Figure 10 [~30 minutes]**     
+**Figure 12 [~30 minutes]**     
 Run the following command in the main repository folder:
 ```
-make figure_10
+make figure_12
 ```
 This will run the appropriate benchmarks on iGUARD with and without lock contention optimizations (Section 6.5 in the paper) and measure the run time. 
 
-Raw outputs with and without contention optimizations will be kept in *benchmarks/Figure_10/results/*. Output files starting with NODET_ contain the outputs when no detection is run, while IGUARD_OPT_ and IGUARD_ are when iGUARD is run with and without the optimizations, respectively.
+Raw outputs with and without contention optimizations will be kept in *benchmarks/Figure_12/results/*. Output files starting with NODET_ contain the outputs when no detection is run, while IGUARD_OPT_ and IGUARD_ are when iGUARD is run with and without the optimizations, respectively.
 
-Final normalized results will be outputted in the terminal and are also contained at *benchmarks/Figure_10/results.txt* in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
+Final normalized results will be outputted in the terminal and are also contained at *benchmarks/Figure_12/results.txt* in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
 
 
 
@@ -92,8 +92,8 @@ For convenience, we also provided a Dockerfile that has all the required depende
 5. Build the dockerfile: `sudo docker build -t test .`
 6. Generate required results.    
 **Table 4**: `sudo docker run --gpus all test make table_4`    
-**Figure 9**: `sudo docker run --gpus all test make figure_9`    
-**Figure 10**: `sudo docker run --gpus all test make figure_10`    
+**Figure 11**: `sudo docker run --gpus all test make figure_11`    
+**Figure 12**: `sudo docker run --gpus all test make figure_12`    
 
 Results will be outputted in tab-separated format directly to the terminal. For figures, the output is the normalized run times used to generate the graphs. For the table, the output is the number of races caught by the different detectors for each benchmark.    
 

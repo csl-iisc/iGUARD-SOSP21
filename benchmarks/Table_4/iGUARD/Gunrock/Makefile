@@ -1,4 +1,4 @@
-BENCHMARKS   ?= louvain bc pr_nibble sm color
+BENCHMARKS   ?= louvain pr_nibble sm color
 HOOKLIB      ?= ../../../../nvbit_release/tools/detector/detector.so
 RUNS         ?= 1
 PREFIX_NODET ?= NODET

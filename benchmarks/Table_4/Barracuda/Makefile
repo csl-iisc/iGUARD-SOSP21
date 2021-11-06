@@ -1,5 +1,5 @@
 DIRS         ?= Kilo-TM SHoC CUB Rodinia
-RACEY_DIRS 	 ?= Kilo-TM SHoC
+RACEY_DIRS 	 ?= Kilo-TM SHoC CUB
 RUNS         ?= 1
 PREFIX_NODET ?= NODET
 PREFIX_DET   ?= BARR

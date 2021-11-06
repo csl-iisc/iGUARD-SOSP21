@@ -1,4 +1,4 @@
-.PHONY: setup detector figure_10
+.PHONY: setup detector table_4 figure_11 figure_12
 
 setup: nvbit_release/tools/detector	
 	$(MAKE) detector
@@ -24,10 +24,10 @@ table_4:
 	cd benchmarks/Table_4; \
 	$(MAKE)
 
-figure_9:
-	cd benchmarks/Figure_9; \
+figure_11:
+	cd benchmarks/Figure_11; \
 	$(MAKE)
 
-figure_10:
-	cd benchmarks/Figure_10; \
+figure_12:
+	cd benchmarks/Figure_12; \
 	$(MAKE)

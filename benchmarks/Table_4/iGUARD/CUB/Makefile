@@ -1,4 +1,4 @@
-BENCHMARKS   ?= b_radix_sort b_reduce b_scan d_part_flag d_part_if d_radix_sort d_reduce d_scan d_sel_flag d_sel_if d_sel_unique d_sort_find
+BENCHMARKS   ?= b_radix_sort b_reduce b_scan d_part_flag d_part_if d_radix_sort d_reduce d_scan d_sel_flag d_sel_if d_sel_unique d_sort_find grid_barrier
 HOOKLIB      ?= ../../../../nvbit_release/tools/detector/detector.so
 RUNS         ?= 1
 PREFIX_NODET ?= NODET

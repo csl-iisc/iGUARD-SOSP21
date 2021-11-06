@@ -4,11 +4,11 @@ PREFIX_DET1   ?= iGUARD/results/IGUARD
 PREFIX_DET2   ?= Barracuda/results/BARR
 RUNS          ?= 5
 BENCHMARKS    ?= matrix-mult 1dconv graph-con reduction rule-110 uts graph-color \
-				 conjugGMB reduceMB warpAA grid_sync louvain bc pr_nibble sm color \
-				 mis cc interac hashtable shoc_bfs
+				 conjugGMB reduceMB grid_sync louvain pr_nibble sm color \
+				 mis cc test_slab_hash prims interac hashtable shoc_bfs grid_barrier
 NO_RACE_BENCH := b_radix_sort b_reduce b_scan d_part_flag d_part_if d_radix_sort \
 				 d_reduce d_scan d_sel_flag d_sel_if d_sel_unique d_sort_find\
-				 dwt2d hotspot hybridsort kmeans needle nn pathfinder srad
+				 dwt2d hotspot hybridsort kmeans needle nn pathfinder srad warpAA
 
 run:
 	$(MAKE) run_iGUARD

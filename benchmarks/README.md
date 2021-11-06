@@ -104,12 +104,14 @@ The following table lists the workloads used in the evaluation of the submission
 | ---------- | -------- | -------- | - |
 | ScoR       | [[Paper]](https://www.csa.iisc.ac.in/~arkapravab/papers/isca20_ScoRD.pdf)     | [[Github]](https://github.com/csl-iisc/ScoR) | Racey applications using scopes. |
 | CG         | [[Blog]](https://developer.nvidia.com/blog/cooperative-groups/)     | [[Github]](https://github.com/NVIDIA/cuda-samples) | Sample applications using NVIDIA Cooperative Groups. |
-| Gunrock     | [[Paper]](https://escholarship.org/uc/item/9gj6r1dj)     | [[Github]](https://github.com/gunrock/gunrock)     | Graph processing system for GPUs. |
-| LonestarGPU | [[Paper]](http://cs.txstate.edu/~mb92/papers/iiswc12.pdf)     | [[Github]](https://github.com/IntelligentSoftwareSystems/Galois/tree/master/lonestar/analytics/gpu)     | GPU applications with irregular behaviour.
-| Kilo-TM  | [[Paper]](https://ieeexplore.ieee.org/document/6174995)     | [[Github]](https://github.com/upenn-acg/barracuda/tree/master/benchmarks/gpu-tm)     | GPU applications with fine-grained communication between threads. | 
-| SHoC     | [[Paper]](https://dl.acm.org/doi/10.1145/1735688.1735702)     | [[Github]](https://github.com/vetter/shoc) | Applications with heterogeneous compute.
-| CUB      | [[Website]](https://nvlabs.github.io/cub/)     | [[Github]](https://github.com/NVIDIA/cub)     | Parallel compute primitives for GPUs. |
-| Rodinia  | [[Paper]](https://www.cs.virginia.edu/~skadron/Papers/rodinia_iiswc09.pdf)     | [[Website]](http://lava.cs.virginia.edu/Rodinia/download.htm)     | Benchmarks for heterogeneous compute.
+| Gunrock    | [[Paper]](https://escholarship.org/uc/item/9gj6r1dj)     | [[Github]](https://github.com/gunrock/gunrock)     | Graph processing system for GPUs. |
+| LonestarGPU| [[Paper]](http://cs.txstate.edu/~mb92/papers/iiswc12.pdf)     | [[Github]](https://github.com/IntelligentSoftwareSystems/Galois/tree/master/lonestar/analytics/gpu)     | GPU applications with irregular behaviour.
+| SlabHash   | [[Paper]](https://par.nsf.gov/servlets/purl/10062407)     | [[Github]](https://github.com/owensgroup/SlabHash)     | A warp-oriented dynamic hash table for GPUs
+| cuML       | [[Website]](https://docs.rapids.ai/api/cuml/stable/)     | [[Github]](https://github.com/rapidsai/cuml)     | Suite of libraries that implement machine learning algorithms and mathematical primitives
+| Kilo-TM    | [[Paper]](https://ieeexplore.ieee.org/document/6174995)     | [[Github]](https://github.com/upenn-acg/barracuda/tree/master/benchmarks/gpu-tm)     | GPU applications with fine-grained communication between threads. | 
+| SHoC       | [[Paper]](https://dl.acm.org/doi/10.1145/1735688.1735702)     | [[Github]](https://github.com/vetter/shoc) | Applications with heterogeneous compute.
+| CUB        | [[Website]](https://nvlabs.github.io/cub/)     | [[Github]](https://github.com/NVIDIA/cub)     | Parallel compute primitives for GPUs. |
+| Rodinia    | [[Paper]](https://www.cs.virginia.edu/~skadron/Papers/rodinia_iiswc09.pdf)     | [[Website]](http://lava.cs.virginia.edu/Rodinia/download.htm)     | Benchmarks for heterogeneous compute.
 
 
 ## References

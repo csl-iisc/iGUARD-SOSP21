@@ -9,11 +9,6 @@ For full details refer to our paper:
 ## Benchmarks
 To replicate the results given in the paper, we provide precompiled application binaries. Full details are given in the **[README in the benchmarks folder](benchmarks/README.md)**.
 
-Required software packages can be installed through apt using the following command:
-```
-sudo apt-get install -y wget bc gcc time gawk libtbb-dev
-```
-
 ## Hardware and software requirements
 iGUARD is built on top of NVBit (version 1.4) and shares its requirements, listed below:
 * SM compute capability: >= 3.5 && <= 8.0
@@ -25,6 +20,10 @@ iGUARD is built on top of NVBit (version 1.4) and shares its requirements, liste
 
 Currently no Embedded GPUs or ARMs host are supported.
 
+Required software packages can be installed through apt using the following command:
+```
+sudo apt-get install -y wget bc gcc time gawk libtbb-dev
+```
 
 ## Behind the scenes: iGUARD's parameters, setup, and source code 
 ### Compilation

@@ -36,7 +36,7 @@ make clean_detector
 ```
 
 ### Replicating primary results (Figures and Tables)
-The [benchmarks](benchmarks/) folder contains all the binaries and scripts required to generate the results contained in the paper. Each subfolder in this folder is dedicated to generating a single figure/table. 
+The [benchmarks](/) folder contains all the binaries and scripts required to generate the results contained in the paper. Each subfolder in this folder is dedicated to generating a single figure/table. 
 
 During execution, you may get "Error 124" or "Error 134" from make. These are normal, caused when benchmarks time out, and can safely be ignored. The time-outs happen either due to the presence of races (bugs) in the applications or due to the slowness of another race detector, Barracuda [[1]](#references), that we quantitatively compare against.    
 
@@ -47,11 +47,11 @@ make table_4
 ```
 This will run the appropriate benchmarks on iGUARD and Barracuda and report the number of races detected by each. Barracuda is a prior work that we quantitatively compare against.
 
-A single race (bug) in a program can manifest multiple times and involve different load/store operations. This is particularly true because iGUARD does not stop its detection on detecting a race in the program. iGUARD notes down the races it observed but continues to execute the program. The outputs of the race detector are parsed to count the number of unique races caught. The scripts responsible for parsing can be found inside the respective subfolders in *[benchmarks/Table_4](benchmarks/Table_4/)*, called *extract.sh*. 
+A single race (bug) in a program can manifest multiple times and involve different load/store operations. This is particularly true because iGUARD does not stop its detection on detecting a race in the program. iGUARD notes down the races it observed but continues to execute the program. The outputs of the race detector are parsed to count the number of unique races caught. The scripts responsible for parsing can be found inside the respective subfolders in *[Table_4](Table_4/)*, called *extract.sh*. 
 
-Raw outputs for iGUARD and Barracuda will be contained in *benchmarks/Table_4/iGUARD/results/* and *benchmarks/Table_4/Barracuda/results/* respectively. Files starting with IGUARD_ and BARR_ contain the outputs when iGUARD and Barracuda are used, respectively.
+Raw outputs for iGUARD and Barracuda will be contained in *Table_4/iGUARD/results/* and *Table_4/Barracuda/results/* respectively. Files starting with IGUARD_ and BARR_ contain the outputs when iGUARD and Barracuda are used, respectively.
 
-Final parsed results will be outputted in the terminal and are also contained at *benchmarks/Table_4/results.txt* in tab-separated format.    
+Final parsed results will be outputted in the terminal and are also contained at *Table_4/results.txt* in tab-separated format.    
 
 Races are non-deterministic by their very nature. Not all races will manifest in every execution. The happens-before race detection philosophy that iGUARD partially relies upon can catch races only if they manifest. The scripts are set up to run each program five times by default to step aside possible non-determinism in the total number of races reported. If any slight variance is observed between the number of races reported by the tool and that in the paper, rerunning it should resolve the difference. 
 
@@ -62,9 +62,9 @@ make figure_11
 ```
 This will run the appropriate benchmarks on iGUARD and Barracuda and measure the run time.    
 
-Raw outputs and run times for iGUARD and Barracuda will be contained in *benchmarks/Figure_11/iGUARD/results/* and *benchmarks/Figure_11/Barracuda/results/* respectively. Output files starting with NODET_ contain the outputs when no detection is run, while IGUARD_ and BARR_ are when iGUARD and Barracuda are used, respectively.
+Raw outputs and run times for iGUARD and Barracuda will be contained in *Figure_11/iGUARD/results/* and *Figure_11/Barracuda/results/* respectively. Output files starting with NODET_ contain the outputs when no detection is run, while IGUARD_ and BARR_ are when iGUARD and Barracuda are used, respectively.
 
-Final normalized results will be outputted in the terminal and are also contained at *benchmarks/Figure_11/results.txt* in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
+Final normalized results will be outputted in the terminal and are also contained at *Figure_11/results.txt* in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
 
 **Figure 12 [~30 minutes]**     
 Run the following command in the main repository folder:
@@ -73,9 +73,9 @@ make figure_12
 ```
 This will run the appropriate benchmarks on iGUARD with and without lock contention optimizations (Section 6.5 in the paper) and measure the run time. 
 
-Raw outputs with and without contention optimizations will be kept in *benchmarks/Figure_12/results/*. Output files starting with NODET_ contain the outputs when no detection is run, while IGUARD_OPT_ and IGUARD_ are when iGUARD is run with and without the optimizations, respectively.
+Raw outputs with and without contention optimizations will be kept in *Figure_12/results/*. Output files starting with NODET_ contain the outputs when no detection is run, while IGUARD_OPT_ and IGUARD_ are when iGUARD is run with and without the optimizations, respectively.
 
-Final normalized results will be outputted in the terminal and are also contained at *benchmarks/Figure_12/results.txt* in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
+Final normalized results will be outputted in the terminal and are also contained at *Figure_12/results.txt* in tab-separated format. This can be imported into a spreadsheet of your choice to generate the appropriate figure.
 
 
 
@@ -85,7 +85,7 @@ For convenience, we also provided a Dockerfile that has all the required depende
 2. Setup the appropriate repository for the nvidia-container-runtime: https://nvidia.github.io/nvidia-container-runtime/
 3. Install nvidia-container-runtime: `sudo apt-get install nvidia-container-runtime`
 4. Restart Docker for the changes to take effect: `sudo systemctl restart docker`
-5. Build the dockerfile: `sudo docker build -t test .`
+5. Build the dockerfile: `sudo docker build -t test ..`
 6. Generate required results.    
 **Table 4**: `sudo docker run --gpus all test make table_4`    
 **Figure 11**: `sudo docker run --gpus all test make figure_11`    

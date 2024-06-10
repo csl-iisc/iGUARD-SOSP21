@@ -3,8 +3,13 @@ We provide the source code and the setup for iGUARD, a tool to detect races in G
 
 This README provides a peek into different parameters of the tool and a very high-level view of source code organization.    
 
-For full details refer to our paper:
-- Aditya K. Kamath and Arkaprava Basu. 2021. **IGUARD: In-GPU Advanced Race Detection.** In _Proceedings of the ACM SIGOPS 28th Symposium on Operating Systems Principles (SOSP '21)._ [[Paper]](https://dl.acm.org/doi/10.1145/3477132.3483545) [[Video]](https://www.youtube.com/watch?v=UxLNZHoxRjY)
+For full details refer to our paper: [[Paper]](https://dl.acm.org/doi/10.1145/3477132.3483545)    [[Video]](https://www.youtube.com/watch?v=UxLNZHoxRjY)
+<pre>
+<b>iGUARD: In-GPU Advanced Race Detection</b>
+Aditya K Kamath and Arkaprava Basu
+<i>ACM SIGOPS 28th Symposium on Operating Systems Principles (SOSP), 2021</i>
+DOI: https://doi.org/10.1145/3477132.3483545
+</pre>
 
 ## Benchmarks
 To replicate the results given in the paper, we provide precompiled application binaries. Full details are given in the **[README in the benchmarks folder](benchmarks/README.md)**.

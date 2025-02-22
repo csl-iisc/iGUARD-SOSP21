@@ -1,6 +1,8 @@
 # iGUARD: <ins>I</ins>n-<ins>G</ins>P<ins>U</ins> <ins>A</ins>dvanced <ins>R</ins>ace <ins>D</ins>etection
 We provide the source code and the setup for iGUARD, a tool to detect races in GPU programs. iGUARD instruments GPU programs to detect races in them. It uses NVIDIA's NVBit [[1]](#references), a GPU binary instrumenter, as the framework for instrumentation. 
 
+**NOTE: This branch uses an updated version of NVBit and has not been extensively tested. Use the [artifact-eval-sosp](https://github.com/csl-iisc/iGUARD-SOSP21/tree/artifact-eval-sosp) branch for the version we used in our paper.**
+
 This README provides a peek into different parameters of the tool and a very high-level view of source code organization.    
 
 For full details refer to our paper: [[Paper]](https://dl.acm.org/doi/10.1145/3477132.3483545)    [[Video]](https://www.youtube.com/watch?v=UxLNZHoxRjY)
@@ -15,15 +17,18 @@ DOI: https://doi.org/10.1145/3477132.3483545
 To replicate the results given in the paper, we provide precompiled application binaries. Full details are given in the **[README in the benchmarks folder](benchmarks/README.md)**.
 
 ## Hardware and software requirements
-iGUARD is built on top of NVBit (version 1.4) and shares its requirements, listed below:
-* SM compute capability: >= 3.5 && <= 8.0
-* Host CPU: x86\_64, ppc64le, aarch64
-* OS: Linux
-* GCC version : >= 5.3.0 for x86\_64; >= 7.4.0 for ppc64le and aarch64
-* CUDA version: >= 10.1
-* CUDA driver version: <= 450.00
+iGUARD is built on top of NVBit (version 1.7.4) and shares its requirements, listed below:
+* SM compute capability:              >= 3.5 && <= 9.2
+* Host CPU:                           x86_64, aarch64
+* OS:                                 Linux
+* GCC version:                        >= 5.3.0 for x86_64; >= 7.4.0 for aarch64
+* CUDA version:                       >= 12.0
+* CUDA driver version:                <= 555.xx
+* nvcc version for tool compilation   >= 10.2
 
-Currently no Embedded GPUs or ARMs host are supported.
+Because NVBit does not require application source code, any pre-compiled GPU
+application should work regardless of which compiler (or version) has been
+used (i.e. nvcc, pgicc, etc).
 
 Required software packages can be installed through apt using the following command:
 ```

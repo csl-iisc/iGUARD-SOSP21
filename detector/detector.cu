@@ -1,10 +1,11 @@
 /********************************************************************************************
- * Copyright (c) 2021 Indian Institute of Science
+ * Copyright (c) 2025 Indian Institute of Science
  * All rights reserved.
  *
  * Developed by:    Aditya K Kamath
  *                  Computer Systems Lab
  *                  Indian Institute of Science
+ *                  https://akkamath.github.io/
  *                  https://csl.csa.iisc.ac.in/
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -163,14 +164,14 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
         const std::vector<Instr *> &instrs = nvbit_get_instrs(ctx, f);
         if (verbose) {
             printf("Inspecting function %s at address 0x%lx\n",
-                   nvbit_get_func_name(ctx, f), nvbit_get_func_addr(f));
+                   nvbit_get_func_name(ctx, f), nvbit_get_func_addr(ctx, f));
         }
 
         uint32_t cnt = 0;
         /* iterate on all the static instructions in the function */
         for (auto instr : instrs) {
             if (cnt < instr_begin_interval || cnt >= instr_end_interval ||
-                    (instr->getMemOpType() == Instr::memOpType::NONE && 
+                    (instr->getMemorySpace() == InstrType::MemorySpace::NONE && 
                     !isBarrier(instr) && !isFence(instr) && !(isWarpBar(instr) && check_its))) {
                 cnt++;
                 continue;
@@ -186,7 +187,7 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
                  * arguments */
                 nvbit_insert_call(instr, "instrument_barrier", IPOINT_AFTER);
                 /* predicate value */
-                nvbit_add_call_arg_pred_val(instr);
+                nvbit_add_call_arg_guard_pred_val(instr);
                 nvbit_add_call_arg_const_val64(instr, (uint64_t)&counters[BARRIER]);
                 continue;
             }
@@ -196,7 +197,7 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
                  * arguments */
                 nvbit_insert_call(instr, "instrument_fence", IPOINT_BEFORE);
                 /* predicate value */
-                nvbit_add_call_arg_pred_val(instr);
+                nvbit_add_call_arg_guard_pred_val(instr);
                 nvbit_add_call_arg_const_val32(instr, getScope(instr));
                 nvbit_add_call_arg_const_val64(instr, (uint64_t)&counters[WARP_CTRS]);
                 nvbit_add_call_arg_const_val64(instr, (uint64_t)&counters[LOCKS]);
@@ -209,7 +210,7 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
                  * arguments */
                 nvbit_insert_call(instr, "instrument_warp_bar", IPOINT_BEFORE);
                 /* predicate value */
-                nvbit_add_call_arg_pred_val(instr);
+                nvbit_add_call_arg_guard_pred_val(instr);
                 nvbit_add_call_arg_const_val64(instr, (uint64_t)&counters[WARP_BAR]);                
                 continue;            
             }
@@ -238,16 +239,16 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
             /* iterate on the operands */
             for (int i = 0; i < instr->getNumOperands(); i++) {
                 /* get the operand "i" */
-                const Instr::operand_t *op = instr->getOperand(i);
+                const InstrType::operand_t *op = instr->getOperand(i);
 
-                if (op->type == Instr::operandType::MREF && 
-                    (instr->getMemOpType() == Instr::memOpType::GENERIC
-                    || instr->getMemOpType() == Instr::memOpType::GLOBAL)) {
+                if (op->type == InstrType::OperandType::MREF && 
+                    (instr->getMemorySpace() == InstrType::MemorySpace::GENERIC
+                    || instr->getMemorySpace() == InstrType::MemorySpace::GLOBAL)) {
                     /* insert call to the instrumentation function with its
                      * arguments */
                     nvbit_insert_call(instr, "instrument_mem", IPOINT_BEFORE);
                     /* predicate value */
-                    nvbit_add_call_arg_pred_val(instr);
+                    nvbit_add_call_arg_guard_pred_val(instr);
                     /* opcode id */
                     nvbit_add_call_arg_const_val32(instr, opcode_id);
                     /* memory reference 64 bit address */
@@ -295,7 +296,7 @@ __global__ void flush_channel() {
     /* push memory access with negative cta id to communicate the kernel is
      * completed */
     mem_access_t ma;
-    ma.warp_id = -1;
+    ma.warp_id = (uint64_t)-1;
     channel_dev.push(&ma, sizeof(mem_access_t));
 
     /* flush channel */
@@ -547,7 +548,7 @@ void nvbit_at_cuda_event(CUcontext ctx, int is_exit, nvbit_api_cuda_t cbid,
             /* wait here until the receiving thread has not finished with the
              * current kernel */
             while (recv_thread_receiving) {
-                pthread_yield();
+                sched_yield();
             }
             if(debug_out)
                 thread_time += (double)std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::high_resolution_clock::now() - start_time).count() / 1000.0;
@@ -567,8 +568,8 @@ void *recv_thread_fun(void *) {
             printf("\nKernel timed out.\n");
             fflush(stdout);
             int highestPriority;
-            cudaDeviceGetStreamPriorityRange (NULL, &highestPriority );
-            cudaStreamCreateWithPriority ( &pStream, cudaStreamNonBlocking, highestPriority );
+            CUDA_SAFECALL(cudaDeviceGetStreamPriorityRange (NULL, &highestPriority ));
+            CUDA_SAFECALL(cudaStreamCreateWithPriority ( &pStream, cudaStreamNonBlocking, highestPriority ));
             skip_flag = true;
             flush_channel<<<1, 1, 0, pStream>>>();
             flushed = true;
@@ -585,7 +586,7 @@ void *recv_thread_fun(void *) {
                     (mem_access_t *)&recv_buffer[num_processed_bytes];
 
                 /* when we get this cta_id_x it means the kernel has completed */
-                if (ma->warp_id == -1) {
+                if (ma->warp_id == (uint64_t)-1) {
                     recv_thread_receiving = false;
                     if(flushed) // Due to timeout
                         assert(false);
@@ -638,7 +639,7 @@ void *recv_thread_fun(void *) {
     return NULL;
 }
 
-void nvbit_at_ctx_init(CUcontext ctx) {
+void nvbit_tool_init(CUcontext ctx) {
     if(!turned_off && !recv_thread_started) {
         recv_thread_started = true;
         channel_host.init(0, CHANNEL_SIZE, &channel_dev, NULL);
@@ -647,10 +648,10 @@ void nvbit_at_ctx_init(CUcontext ctx) {
     
     start = std::chrono::high_resolution_clock::now();
     skip_flag = true;
-    cudaMemcpy(&parameters[BYTE_GRAN], &granularity, sizeof(uint32_t), cudaMemcpyHostToDevice);
+    CUDA_SAFECALL(cudaMemcpy(&parameters[BYTE_GRAN], &granularity, sizeof(uint32_t), cudaMemcpyHostToDevice));
     uint32_t val = ((check_locking ? MASK_CHECK_LOCKS : 0) | /*(lock_granularity ? MASK_LOCK_GRAN : 0) |*/ 
     	(check_its ? MASK_CHECK_ITS : 0) | (contention_optim ? MASK_CONTENT_OPT : 0));
-    cudaMemcpy(&parameters[OPTIONS], &val, sizeof(uint32_t), cudaMemcpyHostToDevice);
+    CUDA_SAFECALL(cudaMemcpy(&parameters[OPTIONS], &val, sizeof(uint32_t), cudaMemcpyHostToDevice));
     
     size_t free = 0, total = 0;
     CUDA_SAFECALL(cudaMemGetInfo(&free, &total));

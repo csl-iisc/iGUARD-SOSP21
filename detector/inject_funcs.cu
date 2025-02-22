@@ -1,10 +1,11 @@
 /********************************************************************************************
- * Copyright (c) 2021 Indian Institute of Science
+ * Copyright (c) 2025 Indian Institute of Science
  * All rights reserved.
  *
  * Developed by:    Aditya K Kamath
  *                  Computer Systems Lab
  *                  Indian Institute of Science
+ *                  https://akkamath.github.io/
  *                  https://csl.csa.iisc.ac.in/
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -177,6 +178,7 @@ extern "C" __device__ __noinline__ void instrument_warp_bar(int pred, uint64_t w
     __syncwarp(mask);
 }
 
+#ifdef DEBUG
 __device__ __inline__ void print_instr(uint32_t op_mask, scope_t scope, uint64_t addr, uint64_t offset)
 {
     uint64_t WARPS_PER_BLK = roundUp(blockDim.x * blockDim.y * blockDim.z, WARP_SIZE);
@@ -210,6 +212,7 @@ __device__ __inline__ void print_instr(uint32_t op_mask, scope_t scope, uint64_t
         }
     }
 }
+#endif
 
 __device__ __inline__ void print_md(uint64_t md, uint64_t read_md, uint64_t g_wid, uint64_t filter, uint64_t offset, BYTE GF, BYTE BF, BYTE OWB)
 {

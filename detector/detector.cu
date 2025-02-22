@@ -56,11 +56,37 @@
 
 /* Channel used to communicate from GPU to CPU receiving thread */
 #define CHANNEL_SIZE (1l << 20)
-static __managed__ ChannelDev channel_dev;
-static ChannelHost channel_host;
 std::chrono::time_point<std::chrono::high_resolution_clock> start;
 std::chrono::time_point<std::chrono::high_resolution_clock> start_kernel;
 std::chrono::time_point<std::chrono::high_resolution_clock> start_time;
+
+enum class RecvThreadState {
+    WORKING,
+    STOP,
+    FINISHED,
+};
+
+struct CTXstate {
+    /* context id */
+    int id;
+
+    /* Channel used to communicate from GPU to CPU receiving thread */
+    ChannelDev* channel_dev;
+    ChannelHost channel_host;
+
+    // After initialization, set it to WORKING to make recv thread get data,
+    // parent thread sets it to STOP to make recv thread stop working.
+    // recv thread sets it to FINISHED when it cleans up.
+    // parent thread should wait until the state becomes FINISHED to clean up.
+    volatile RecvThreadState recv_thread_done = RecvThreadState::STOP;
+};
+
+/* lock */
+pthread_mutex_t mutex;
+pthread_mutex_t cuda_event_mutex;
+
+/* map to store context state */
+std::unordered_map<CUcontext, CTXstate*> ctx_state_map;
 
 double init_time = 0;
 double instru_time = 0;
@@ -139,11 +165,21 @@ void nvbit_at_init() {
     GET_VAR_INT(debug_out, "DEBUG", 0, "Output debug info (def = 0)");
     std::string pad(100, '-');
     printf("%s\n", pad.c_str());
+
+    /* set mutex as recursive */
+    pthread_mutexattr_t attr;
+    pthread_mutexattr_init(&attr);
+    pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
+    pthread_mutex_init(&mutex, &attr);
+
+    pthread_mutex_init(&cuda_event_mutex, &attr);
 }
 /* Set used to avoid re-instrumenting the same functions multiple times */
 std::unordered_set<CUfunction> already_instrumented;
 
 void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
+    assert(ctx_state_map.find(ctx) != ctx_state_map.end());
+    CTXstate* ctx_state = ctx_state_map[ctx];
     if(debug_out)
         start_time = std::chrono::high_resolution_clock::now();
     /* Get related functions of the kernel (device function that can be
@@ -268,7 +304,7 @@ void instrument_function_if_needed(CUcontext ctx, CUfunction func) {
                     /* add pointer to channel_dev*/
                     nvbit_add_call_arg_const_val64(instr, (uint64_t)counters);
                     /* add pointer to channel_dev*/
-                    nvbit_add_call_arg_const_val64(instr, (uint64_t)&channel_dev);
+                    nvbit_add_call_arg_const_val64(instr, (uint64_t)ctx_state->channel_dev);
                     /* add pointer to channel_dev*/
                     nvbit_add_call_arg_const_val64(instr, (uint64_t)parameters);
                     /* add pointer to channel_dev*/
@@ -292,15 +328,15 @@ static void update_rss()
 	}
 }
 
-__global__ void flush_channel() {
+__global__ void flush_channel(ChannelDev* ch_dev) {
     /* push memory access with negative cta id to communicate the kernel is
      * completed */
     mem_access_t ma;
     ma.warp_id = (uint64_t)-1;
-    channel_dev.push(&ma, sizeof(mem_access_t));
+    ch_dev->push(&ma, sizeof(mem_access_t));
 
     /* flush channel */
-    channel_dev.flush();
+    ch_dev->flush();
 }
 
 void nvbit_at_cuda_event(CUcontext ctx, int is_exit, nvbit_api_cuda_t cbid,
@@ -531,9 +567,12 @@ void nvbit_at_cuda_event(CUcontext ctx, int is_exit, nvbit_api_cuda_t cbid,
              * the flush_channel kernel */
             skip_flag = true;
 
+            assert(ctx_state_map.find(ctx) != ctx_state_map.end());
+            CTXstate* ctx_state = ctx_state_map[ctx];
+
             /* issue flush of channel so we are sure all the memory accesses
              * have been pushed */
-            flush_channel<<<1, 1>>>();
+            flush_channel<<<1, 1>>>(ctx_state->channel_dev);
             cudaDeviceSynchronize();
             err = cudaGetLastError();
             if(err != cudaSuccess) {
@@ -556,7 +595,16 @@ void nvbit_at_cuda_event(CUcontext ctx, int is_exit, nvbit_api_cuda_t cbid,
     }
 }
 
-void *recv_thread_fun(void *) {
+void *recv_thread_fun(void *args) {
+    CUcontext ctx = (CUcontext)args;
+
+    pthread_mutex_lock(&mutex);
+    /* get context state from map */
+    assert(ctx_state_map.find(ctx) != ctx_state_map.end());
+    CTXstate* ctx_state = ctx_state_map[ctx];
+
+    ChannelHost* ch_host = &ctx_state->channel_host;
+    pthread_mutex_unlock(&mutex);
     char *recv_buffer = (char *)malloc(CHANNEL_SIZE);
     cudaStream_t pStream;
     bool flushed = false;
@@ -571,14 +619,14 @@ void *recv_thread_fun(void *) {
             CUDA_SAFECALL(cudaDeviceGetStreamPriorityRange (NULL, &highestPriority ));
             CUDA_SAFECALL(cudaStreamCreateWithPriority ( &pStream, cudaStreamNonBlocking, highestPriority ));
             skip_flag = true;
-            flush_channel<<<1, 1, 0, pStream>>>();
+            flush_channel<<<1, 1, 0, pStream>>>(ctx_state->channel_dev);
             flushed = true;
             skip_flag = false;
         }
         
         uint32_t num_recv_bytes = 0;
         if (recv_thread_receiving &&
-            (num_recv_bytes = channel_host.recv(recv_buffer, CHANNEL_SIZE)) >
+            (num_recv_bytes = ch_host->recv(recv_buffer, CHANNEL_SIZE)) >
                 0) {
             uint32_t num_processed_bytes = 0;
             while (num_processed_bytes < num_recv_bytes) {
@@ -636,15 +684,35 @@ void *recv_thread_fun(void *) {
         }
     }
     free(recv_buffer);
+    ctx_state->recv_thread_done = RecvThreadState::FINISHED;
     return NULL;
 }
 
-void nvbit_tool_init(CUcontext ctx) {
-    if(!turned_off && !recv_thread_started) {
-        recv_thread_started = true;
-        channel_host.init(0, CHANNEL_SIZE, &channel_dev, NULL);
-        pthread_create(&recv_thread, NULL, recv_thread_fun, NULL);
+void nvbit_at_ctx_init(CUcontext ctx) {
+    pthread_mutex_lock(&mutex);
+    if (verbose) {
+        printf("iGUARD: Starting context %p\n", ctx);
     }
+    assert(ctx_state_map.find(ctx) == ctx_state_map.end());
+    CTXstate* ctx_state = new CTXstate;
+    ctx_state_map[ctx] = ctx_state;
+    pthread_mutex_unlock(&mutex);
+}
+
+void nvbit_tool_init(CUcontext ctx) {
+    pthread_mutex_lock(&mutex);
+    assert(ctx_state_map.find(ctx) != ctx_state_map.end());
+    CTXstate* ctx_state = ctx_state_map[ctx];
+    if(!turned_off && !recv_thread_started) {
+        ctx_state->recv_thread_done = RecvThreadState::WORKING;
+        cudaMallocManaged(&ctx_state->channel_dev, sizeof(ChannelDev));
+        recv_thread_started = true;
+        ctx_state->channel_host.init((int)ctx_state_map.size() - 1, CHANNEL_SIZE,
+                                     ctx_state->channel_dev, NULL);
+        pthread_create(&recv_thread, NULL, recv_thread_fun, ctx);
+        nvbit_set_tool_pthread(recv_thread);
+    }
+    pthread_mutex_unlock(&mutex);
     
     start = std::chrono::high_resolution_clock::now();
     skip_flag = true;
@@ -694,11 +762,21 @@ void nvbit_at_ctx_term(CUcontext ctx) {
         CUDA_SAFECALL(cudaFree(metadata[WR_MD]));
         CUDA_SAFECALL(cudaFree(metadata[RD_MD]));
     }
-    skip_flag = false;
+    pthread_mutex_lock(&mutex);
+    /* get context state from map */
+    assert(ctx_state_map.find(ctx) != ctx_state_map.end());
+    CTXstate* ctx_state = ctx_state_map[ctx];
+    ctx_state->recv_thread_done = RecvThreadState::STOP;
     if(recv_thread_started) {
         pthread_join(recv_thread, NULL);
     }
+    //while (ctx_state->recv_thread_done != RecvThreadState::FINISHED);
+    ctx_state->channel_host.destroy(false);
+    cudaFree(ctx_state->channel_dev);
     auto end = std::chrono::high_resolution_clock::now();
+    skip_flag = false;
+    delete ctx_state;
+    pthread_mutex_unlock(&mutex);
     if(debug_out) {
         printf("TIME MS %s %lf %s\n", name, (double)std::chrono::duration_cast<std::chrono::microseconds>(end - start).count() / 1000.0, 
             (turned_off ? "DISABLED" : "ENABLED"));

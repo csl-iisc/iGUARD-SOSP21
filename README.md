@@ -1,7 +1,7 @@
 # iGUARD: <ins>I</ins>n-<ins>G</ins>P<ins>U</ins> <ins>A</ins>dvanced <ins>R</ins>ace <ins>D</ins>etection
 We provide the source code and the setup for iGUARD, a tool to detect races in GPU programs. iGUARD instruments GPU programs to detect races in them. It uses NVIDIA's NVBit [[1]](#references), a GPU binary instrumenter, as the framework for instrumentation. 
 
-**NOTE: This branch uses an updated version of NVBit and has not been extensively tested. Use the [artifact-eval-sosp](https://github.com/csl-iisc/iGUARD-SOSP21/tree/artifact-eval-sosp) branch for the version we used in our paper.**
+**NOTE: This branch uses an updated version of NVBit and has not been extensively tested. Use the [artifact-eval](https://github.com/csl-iisc/iGUARD-SOSP21/tree/artifact-eval) branch for the version we used in our paper.**
 
 This README provides a peek into different parameters of the tool and a very high-level view of source code organization.    
 
